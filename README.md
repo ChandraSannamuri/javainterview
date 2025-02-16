@@ -9,6 +9,44 @@
 
 <!-- QUESTIONS_START -->
 
+Question & Answer: Java Application Execution Flow
+Q1: What are the key steps involved in creating a Java application?
+A: Creating a Java application involves three main steps:
+
+Writing Java Code – Write source code in a .java file using a text editor or an IDE.
+Compiling the Code – Use the Java compiler (javac) to convert the .java file into bytecode (.class file).
+Executing the Code – Run the compiled bytecode using the Java Virtual Machine (JVM).
+Q2: How do you write Java code?
+A: Java code is written in a .java file using a text editor (like Notepad++) or an IDE (such as IntelliJ IDEA, Eclipse, VS Code). It follows OOP principles (Encapsulation, Inheritance, Polymorphism, and Abstraction) and must comply with Java syntax rules.
+
+Q3: What happens during the compilation process?
+A: The Java compiler (javac) translates the .java file into a .class file containing bytecode. The compiler also checks for syntax errors—if any exist, the compilation fails until they are fixed.
+
+Q4: What is bytecode and why is it important?
+A: Bytecode is an intermediate, platform-independent code that allows Java programs to run on any operating system with a JVM. Unlike native machine code, bytecode requires interpretation or Just-In-Time (JIT) compilation at runtime.
+
+Q5: How does the JVM execute Java programs?
+A: The JVM (Java Virtual Machine) loads and interprets bytecode or compiles it Just-In-Time (JIT) for better performance. This allows Java applications to run seamlessly across different platforms like Windows, macOS, and Linux.
+
+Q6: What is Java SE 11’s direct execution feature?
+A: Java SE 11 introduced the ability to run single-file programs without explicit compilation. You can execute a .java file directly using:
+
+
+java MyFile.java
+This method skips generating a .class file but is only applicable for single-file programs.
+Q7: Can you summarize the Java execution flow?
+A: Sure! The Java program execution follows this sequence:
+
+css
+Copy
+Edit
+[Write Java Code] → [Compile (javac)] → [Generate Bytecode (.class)] → [Execute on JVM]
+For Java 11+, you can directly run a .java file:
+
+[Write Java Code] → [Direct Execution (java MyFile.java)]
+This structured process ensures platform independence, error checking, and efficient execution of Java applications.
+![Java Flowchart](imgs/javaCompilation.drawio.png)
+
 ## 1. What are the main features of Java?
 ### Answer:
 Java is a high-level, object-oriented programming language with several key features:
@@ -165,3 +203,6 @@ vehicle.drive();
 ```
 
 <!-- QUESTIONS_END -->
+
+
+
