@@ -1,0 +1,12 @@
+{
+    "name": "java-interview",
+    "version": "1.0.0",
+    "description": "List of 1000 Java Interview Questions",
+    "author": "Chandrasekhar Sannamuri",
+    "scripts": {
+        "gen": "node scripts/slugger.mjs"
+    },
+    "dependencies": {
+        "github-slugger": "^2.0.0"
+    }
+}
