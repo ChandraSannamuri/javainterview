@@ -1,5 +1,5 @@
 # string interview questions
 
-| Question | Details | Logic |
-|----------|---------|-------|
-|string is a palindrome|rever|new StringBuilder(str).reverse()|
+| Question | Details | Logic                                              |
+|----------|---------|----------------------------------------------------|
+|string is a palindrome|rever| new StringBuilder(str).reverse() then check equils |
