@@ -201,7 +201,332 @@ Usage:
 Vehicle vehicle = VehicleFactory.getVehicle("Car");
 vehicle.drive();
 ```
+### *What is Immutability?*
 
+Immutability refers to the property of an object whose state cannot be modified after it is created. Once an immutable object is instantiated, its internal state (i.e., the values of its fields) remains constant throughout its lifetime. Any operation that appears to modify the object actually returns a new object with the updated state, leaving the original object unchanged.
+
+### *Why is Immutability Important?*
+
+1. *Thread Safety*: Immutable objects are inherently thread-safe because their state cannot change after creation. This eliminates the need for synchronization in multi-threaded environments.
+2. *Predictability*: Since the state of an immutable object cannot change, it is easier to reason about and debug code.
+3. *Caching and Reuse*: Immutable objects can be safely cached and reused, as their state will not change over time.
+4. *Security*: Immutable objects are safer to use in sensitive contexts (e.g., as keys in a map) because their state cannot be altered.
+
+---
+
+### *1. Custom Immutable Class*
+
+### *Steps to Create an Immutable Class*
+
+1. *Make the class final*: Prevents subclassing, ensuring that no subclass can override methods and introduce mutability.
+2. *Make all fields private and final*: Ensures that fields cannot be modified after initialization.
+3. *Do not provide setter methods*: Prevents external modification of the object's state.
+4. *Initialize all fields via constructor*: Ensures that fields are set only once during object creation.
+5. *Perform defensive copying for mutable fields*: Prevents modification of nested mutable objects by creating copies of them.
+6. *Prevent cloning*: Override the clone() method to throw an exception, preventing the creation of mutable copies.
+7. *Ensure no mutable state is exposed*: Return copies of mutable fields to prevent external modification.
+
+### *Example: Custom Immutable Class*
+
+java
+import java.util.ArrayList;
+import java.util.List;
+
+public final class ImmutablePerson {
+    private final String name;
+    private final int age;
+    private final List<String> hobbies;
+
+    // Constructor
+    private ImmutablePerson(Builder builder) {
+        this.name = builder.name;
+        this.age = builder.age;
+        this.hobbies = new ArrayList<>(builder.hobbies); // Defensive copy
+    }
+
+    // Getters
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public List<String> getHobbies() {
+        return new ArrayList<>(hobbies); // Return a copy
+    }
+
+    @Override
+    public String toString() {
+        return "ImmutablePerson{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", hobbies=" + hobbies +
+                '}';
+    }
+
+    // Builder class
+    public static class Builder {
+        private String name;
+        private int age;
+        private List<String> hobbies = new ArrayList<>();
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setAge(int age) {
+            this.age = age;
+            return this;
+        }
+
+        public Builder addHobby(String hobby) {
+            this.hobbies.add(hobby);
+            return this;
+        }
+
+        public ImmutablePerson build() {
+            return new ImmutablePerson(this);
+        }
+    }
+}
+
+
+---
+
+### *Test Class for ImmutablePerson*
+
+java
+import java.util.List;
+
+public class ImmutablePersonTest {
+    public static void main(String[] args) {
+        // Create an ImmutablePerson object using the builder
+        ImmutablePerson person = new ImmutablePerson.Builder()
+                .setName("John")
+                .setAge(30)
+                .addHobby("Reading")
+                .addHobby("Swimming")
+                .build();
+
+        // Print the initial state of the object
+        System.out.println("Initial Person: " + person);
+
+        // Verify immutability by attempting to modify the object
+        List<String> originalHobbies = new java.util.ArrayList<>();
+        originalHobbies.add("Reading");
+        originalHobbies.add("Swimming");
+
+        ImmutablePerson person2 = new ImmutablePerson.Builder()
+                .setName("Alice")
+                .setAge(25)
+                .addHobby("Dancing")
+                .build();
+
+        originalHobbies.add("Cooking");
+
+        System.out.println("Original Hobbies List: " + originalHobbies);
+        System.out.println("Person 2 Hobbies: " + person2.getHobbies());
+
+        System.out.println("Person 1 (After Modification Attempt): " + person);
+        System.out.println("Person 2 (After Modification Attempt): " + person2);
+
+        List<String> personHobbies = person.getHobbies();
+        personHobbies.add("Cooking");
+
+        System.out.println("Person 1 Hobbies (After Modification Attempt): " + person.getHobbies());
+        System.out.println("Person 1 (Final State): " + person);
+    }
+}
+
+
+---
+
+## *2. Predefined Immutable Classes in Java*
+
+### *1. String*
+- *Immutability*: Strings are immutable.
+- *Internal Implementation: Uses a **String Constant Pool* to reuse strings.
+- *Design Pattern: **Flyweight Pattern*.
+
+java
+String s1 = "Hello"; // Created in the pool
+String s2 = "Hello"; // Reuses the same reference
+System.out.println(s1 == s2); // true
+
+
+---
+
+### *2. Wrapper Classes (Integer, Long, Double, etc.)*
+- *Immutability*: All wrapper classes are immutable.
+- *Internal Implementation*: Caches frequently used values (e.g., -128 to 127 for Integer).
+- *Design Pattern: **Flyweight Pattern*.
+
+java
+Integer a = 10; // Autoboxing (uses cached value)
+Integer b = 10; // Reuses the cached value
+System.out.println(a == b); // true
+
+
+---
+
+### *3. LocalDate, LocalTime, LocalDateTime (java.time package)*
+- *Immutability*: All classes in the java.time package are immutable.
+- *Internal Implementation*: Fields like year, month, and day are final.
+- *Design Pattern: **Immutable Object Pattern*.
+
+java
+LocalDate date = LocalDate.of(2023, 10, 1);
+LocalDate newDate = date.plusDays(5); // Returns a new instance
+System.out.println(date); // 2023-10-01
+System.out.println(newDate); // 2023-10-06
+
+
+---
+
+### *4. Collections.unmodifiableList(), unmodifiableSet(), etc.*
+- *Immutability*: These methods return immutable views of collections.
+- *Internal Implementation*: Throws UnsupportedOperationException for modification attempts.
+- *Design Pattern: **Decorator Pattern*.
+
+java
+List<String> list = new ArrayList<>();
+list.add("Java");
+List<String> immutableList = Collections.unmodifiableList(list);
+immutableList.add("Python"); // Throws UnsupportedOperationException
+
+
+---
+
+### *5. BigInteger and BigDecimal*
+- *Immutability*: Both classes are immutable.
+- *Internal Implementation*: Fields like int[] mag in BigInteger are final.
+- *Design Pattern: **Immutable Object Pattern*.
+
+java
+BigInteger num1 = new BigInteger("100");
+BigInteger num2 = num1.add(new BigInteger("200")); // Returns a new instance
+System.out.println(num1); // 100
+System.out.println(num2); // 300
+
+
+---
+
+## *3. Additional Scenarios*
+
+### *1. Deep vs. Shallow Immutability*
+- *Shallow Immutability*: Only the top-level object is immutable.
+- *Deep Immutability*: The entire object graph is immutable.
+
+java
+final class ImmutablePerson {
+    private final String name;
+    private final List<Address> addresses;
+
+    public ImmutablePerson(String name, List<Address> addresses) {
+        this.name = name;
+        this.addresses = new ArrayList<>(addresses); // Shallow copy
+    }
+
+    public List<Address> getAddresses() {
+        return new ArrayList<>(addresses); // Shallow copy
+    }
+}
+
+
+---
+
+### *2. Serialization and Immutability*
+- *Problem*: Serialization can break immutability.
+- *Solution*: Override readObject() to prevent deserialization.
+
+java
+private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+    throw new NotSerializableException("ImmutablePerson is not serializable");
+}
+
+
+---
+
+### *3. Immutable Collections*
+- Use List.of(), Set.of(), or Collections.unmodifiableList().
+
+java
+List<String> immutableList = List.of("Java", "Python", "C++");
+immutableList.add("JavaScript"); // Throws UnsupportedOperationException
+
+
+---
+
+### *4. Immutable Classes with Optional Fields*
+- Use the *Builder Pattern* for optional fields.
+
+java
+public static class Builder {
+    private String email; // Optional field
+    public Builder setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+}
+
+
+---
+
+### *5. Immutable Classes with Lazy Initialization*
+- Ensure thread safety for lazy-initialized fields.
+
+java
+private volatile List<String> hobbies; // Lazy initialized
+public List<String> getHobbies() {
+    if (hobbies == null) {
+        synchronized (this) {
+            if (hobbies == null) {
+                hobbies = loadHobbiesFromDatabase();
+            }
+        }
+    }
+    return hobbies;
+}
+
+
+---
+
+### *6. Immutable Classes with Validation*
+- Validate input parameters during construction.
+
+java
+public ImmutablePerson(String name, int age) {
+    if (name == null || name.trim().isEmpty()) {
+        throw new IllegalArgumentException("Name cannot be null or empty");
+    }
+    this.name = name;
+    this.age = age;
+}
+
+
+---
+
+## *4. Design Patterns in Immutable Classes*
+
+### *1. Flyweight Pattern*
+- Used in String and wrapper classes to reuse shared objects.
+
+### *2. Immutable Object Pattern*
+- Used in LocalDate, BigInteger, and BigDecimal.
+
+### *3. Decorator Pattern*
+- Used in Collections.unmodifiableList().
+
+---
+
+## *5. Key Takeaways*
+1. *Immutability* ensures thread safety, predictability, and caching.
+2. *Defensive copying* is crucial for mutable fields.
+3. *Predefined immutable classes* like String, Integer, and LocalDate follow design patterns like Flyweight and Immutable Object.
+4. *Additional scenarios* include deep vs. shallow immutability, serialization, lazy initialization, and validation.
 <!-- QUESTIONS_END -->
 
 
