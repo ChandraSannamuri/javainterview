@@ -37,9 +37,6 @@ This method skips generating a .class file but is only applicable for single-fil
 Q7: Can you summarize the Java execution flow?
 A: Sure! The Java program execution follows this sequence:
 
-css
-Copy
-Edit
 [Write Java Code] → [Compile (javac)] → [Generate Bytecode (.class)] → [Execute on JVM]
 For Java 11+, you can directly run a .java file:
 
